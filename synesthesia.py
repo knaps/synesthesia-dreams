@@ -2370,19 +2370,28 @@ def main(argv: Optional[List[str]] = None):
     Parses arguments and runs the analysis workflow.
     Allows programmatic invocation by passing a list of arguments.
     """
-    parser = argparse.ArgumentParser(description="Analyze Synesthesia vs Baseline dream reports using date-matched sampling.")
+    parser = argparse.ArgumentParser(description="Analyze Synesthesia vs Baseline dream reports using date-matched sampling. All analyses run by default unless skipped.")
     parser.add_argument("--use-pca", action='store_true', help="Use PCA for dimensionality reduction.")
     parser.add_argument("--n-components", type=int, default=100, help="Number of PCA components if --use-pca is set.")
-    parser.add_argument("--run-shap", action='store_true', help="Run SHAP analysis (requires shap library).")
-    parser.add_argument("--run-tfidf", action='store_true', help="Run TF-IDF analysis on deciles (requires nltk).")
-    parser.add_argument("--run-gpt-themes", action='store_true', help="Run GPT per-dream theme tagging on deciles (requires simpleaichat, openai, pydantic, and API key).")
+    parser.add_argument("--skip-shap", action='store_false', dest='run_shap', help="Skip SHAP analysis (default: run). Requires shap library if run.")
+    parser.add_argument("--skip-tfidf", action='store_false', dest='run_tfidf', help="Skip TF-IDF analysis on deciles (default: run). Requires nltk if run.")
+    parser.add_argument("--skip-gpt-themes", action='store_false', dest='run_gpt_themes', help="Skip GPT per-dream theme tagging (default: run). Requires simpleaichat, openai, pydantic, and API key if run.")
     parser.add_argument("--gpt-sample-size", type=int, default=None, help="Sample size for GPT per-dream theme tagging per decile (optional, reduces cost/time).")
-    parser.add_argument("--run-gpt-batch-themes", action='store_true', help="Run GPT batch theme analysis on deciles (requires simpleaichat, openai, pydantic, and API key).")
+    parser.add_argument("--skip-gpt-batch-themes", action='store_false', dest='run_gpt_batch_themes', help="Skip GPT batch theme analysis (default: run). Requires simpleaichat, openai, pydantic, and API key if run.")
     parser.add_argument("--gpt-batch-size", type=int, default=30, help="Batch size for GPT batch theme analysis.")
     parser.add_argument("--gpt-iterations", type=int, default=10, help="Number of iterations for GPT batch theme analysis.")
-    parser.add_argument("--run-keyword-themes", action='store_true', help="Run keyword-based theme analysis using syn_themes_V2.csv.")
-    parser.add_argument("--run-bertopic-analysis", action='store_true', help="Run BERTopic theme analysis using pre-trained model.")
-    parser.add_argument("--run-bertopic-grouping", action='store_true', help="Run BERTopic topic grouping and subsequent grouped theme analysis (requires --run-bertopic-analysis).")
+    parser.add_argument("--skip-keyword-themes", action='store_false', dest='run_keyword_themes', help="Skip keyword-based theme analysis using syn_themes_V2.csv (default: run).")
+    parser.add_argument("--skip-bertopic-analysis", action='store_false', dest='run_bertopic_analysis', help="Skip BERTopic theme analysis using pre-trained model (default: run).")
+    parser.add_argument("--skip-bertopic-grouping", action='store_false', dest='run_bertopic_grouping', help="Skip BERTopic topic grouping and subsequent grouped theme analysis (default: run, if BERTopic analysis also runs).")
+
+    # Set defaults for all analysis flags to True
+    parser.set_defaults(run_shap=True,
+                        run_tfidf=True,
+                        run_gpt_themes=True,
+                        run_gpt_batch_themes=True,
+                        run_keyword_themes=True,
+                        run_bertopic_analysis=True,
+                        run_bertopic_grouping=True)
 
     # If argv is None, parse from sys.argv, otherwise parse the provided list
     args = parser.parse_args(argv) # Pass argv here
@@ -2400,47 +2409,40 @@ if __name__ == "__main__":
 """
 Usage Examples:
 
-# Basic run (loads data, trains model, evaluates, analyzes scores)
+# Full run (all analyses enabled by default: SHAP, TF-IDF, GPT Themes, GPT Batch, Keywords, BERTopic, BERTopic Grouping)
 python synesthesia.py
 
-# Run with SHAP analysis
-python synesthesia.py --run-shap
+# Run without SHAP analysis (all others run by default)
+python synesthesia.py --skip-shap
 
-# Run with TF-IDF analysis and LLM theming of words
-python synesthesia.py --run-tfidf
+# Run without TF-IDF analysis
+python synesthesia.py --skip-tfidf
 
-# Run with per-dream GPT theme tagging (uses default themes list)
-# Requires OPENAI_API_KEY in .env
-python synesthesia.py --run-gpt-themes
+# Run without per-dream GPT theme tagging
+# OPENAI_API_KEY in .env is still required if other GPT analyses run.
+python synesthesia.py --skip-gpt-themes
 
-# Run per-dream tagging on a sample of 50 from top/bottom deciles
-python synesthesia.py --run-gpt-themes --gpt-sample-size 50
+# Run per-dream tagging on a sample of 50 (if not skipped)
+python synesthesia.py --gpt-sample-size 50
 
-# Run with GPT batch theme analysis (default: 10 iterations, batch size 30)
-# Requires OPENAI_API_KEY in .env
-python synesthesia.py --run-gpt-batch-themes
+# Run without GPT batch theme analysis
+python synesthesia.py --skip-gpt-batch-themes
 
-# Run batch analysis with custom parameters
-python synesthesia.py --run-gpt-batch-themes --gpt-batch-size 20 --gpt-iterations 5
+# Customize GPT batch analysis parameters (if not skipped)
+python synesthesia.py --gpt-batch-size 20 --gpt-iterations 5
 
-# Run everything (SHAP, TF-IDF, Per-Dream Themes, Batch Themes)
-python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes
+# Run without keyword-based theme analysis
+python synesthesia.py --skip-keyword-themes
 
-# Run with PCA (150 components) and SHAP
-python synesthesia.py --use-pca --n-components 150 --run-shap
+# Run without BERTopic analysis (this will also skip BERTopic grouping)
+python synesthesia.py --skip-bertopic-analysis
 
-# Run keyword-based theme analysis
-python synesthesia.py --run-keyword-themes
+# Run BERTopic analysis but skip the topic grouping stage
+python synesthesia.py --skip-bertopic-grouping # Note: --skip-bertopic-analysis would also skip this
 
-# Run everything including keyword themes
-python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes
+# Run with PCA (150 components) and skip SHAP, all other analyses run
+python synesthesia.py --use-pca --n-components 150 --skip-shap
 
-# Run BERTopic analysis (assumes model exists)
-python synesthesia.py --run-bertopic-analysis
-
-# Run everything including BERTopic
-python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes --run-bertopic-analysis
-
-# Run BERTopic analysis AND the topic grouping stage
-python synesthesia.py --run-bertopic-analysis --run-bertopic-grouping
+# Example: Run only the basic model and score analysis, skipping all optional analyses
+python synesthesia.py --skip-shap --skip-tfidf --skip-gpt-themes --skip-gpt-batch-themes --skip-keyword-themes --skip-bertopic-analysis --skip-bertopic-grouping
 """
