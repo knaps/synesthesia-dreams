@@ -1450,6 +1450,15 @@ def analyze_bertopic_themes(df, model_path=BERTOPIC_MODEL_PATH, api_key=None, mi
         # 1. Instantiate the Analyzer (loads the model)
         analyzer = DreamTopicAnalyzer(model_path=model_path)
 
+        # Log the number of topics in the model
+        if analyzer.topic_model:
+            topic_info_df_for_count = analyzer.topic_model.get_topic_info()
+            # Exclude outlier topic (-1) if present
+            num_topics = len(topic_info_df_for_count[topic_info_df_for_count['Topic'] != -1])
+            logging.info(f"Loaded BERTopic model contains {num_topics} topics (excluding outliers).")
+        else:
+            logging.warning("BERTopic model not loaded in analyzer, cannot count topics.")
+
         # 2. Prepare Sentences
         # Pass the label column to carry it through
         sentences_df = analyzer.prepare_sentences_from_dataframe(df, text_col='text', id_col='id', label_col='is_synesthesia')
