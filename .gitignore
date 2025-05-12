@@ -1,4 +1,5 @@
 #custom
+*.png
 *.pickle
 *.pkl
 *.csv
