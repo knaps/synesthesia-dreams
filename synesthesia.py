@@ -1295,7 +1295,7 @@ Summary:"""
 
 # --- Keyword Theme Analysis ---
 
-def analyze_keyword_themes(df, keyword_csv_path='synesthesia/syn_themes_V2.csv', api_key=None):
+def analyze_keyword_themes(df, keyword_csv_path='syn_themes_V2.csv', api_key=None):
     """
     Analyzes dream text based on predefined keyword lists from a CSV,
     comparing prevalence between actual synesthesia (True) and baseline (False) groups.
@@ -1649,7 +1649,7 @@ Baseline Group Themes: [Your summary focusing on themes from the second list]
 
     # Save the original results DataFrame (filtered only by min_count_threshold) to a CSV file
     try:
-        bertopic_csv_path = 'synesthesia/synesthesia_bertopic_theme_prevalence.csv'
+        bertopic_csv_path = 'synesthesia_bertopic_theme_prevalence.csv'
         prevalence_df.to_csv(bertopic_csv_path, index=False)
         logging.info(f"Saved BERTopic theme prevalence results to {bertopic_csv_path}")
     except Exception as e:
@@ -2125,7 +2125,7 @@ Baseline Group Themes: [Your summary focusing on themes from the second list, us
 
     # 5. Save Results
     try:
-        grouped_bertopic_csv_path = 'synesthesia/synesthesia_bertopic_grouped_theme_prevalence.csv'
+        grouped_bertopic_csv_path = 'synesthesia_bertopic_grouped_theme_prevalence.csv'
         prevalence_df.to_csv(grouped_bertopic_csv_path, index=False)
         logging.info(f"Saved grouped BERTopic theme prevalence results to {grouped_bertopic_csv_path}")
     except Exception as e:
@@ -2380,7 +2380,7 @@ def main(argv: Optional[List[str]] = None):
     parser.add_argument("--run-gpt-batch-themes", action='store_true', help="Run GPT batch theme analysis on deciles (requires simpleaichat, openai, pydantic, and API key).")
     parser.add_argument("--gpt-batch-size", type=int, default=30, help="Batch size for GPT batch theme analysis.")
     parser.add_argument("--gpt-iterations", type=int, default=10, help="Number of iterations for GPT batch theme analysis.")
-    parser.add_argument("--run-keyword-themes", action='store_true', help="Run keyword-based theme analysis using synesthesia/syn_themes_V2.csv.")
+    parser.add_argument("--run-keyword-themes", action='store_true', help="Run keyword-based theme analysis using syn_themes_V2.csv.")
     parser.add_argument("--run-bertopic-analysis", action='store_true', help="Run BERTopic theme analysis using pre-trained model.")
     parser.add_argument("--run-bertopic-grouping", action='store_true', help="Run BERTopic topic grouping and subsequent grouped theme analysis (requires --run-bertopic-analysis).")
 
@@ -2401,46 +2401,46 @@ if __name__ == "__main__":
 Usage Examples:
 
 # Basic run (loads data, trains model, evaluates, analyzes scores)
-python synesthesia/synesthesia.py
+python synesthesia.py
 
 # Run with SHAP analysis
-python synesthesia/synesthesia.py --run-shap
+python synesthesia.py --run-shap
 
 # Run with TF-IDF analysis and LLM theming of words
-python synesthesia/synesthesia.py --run-tfidf
+python synesthesia.py --run-tfidf
 
 # Run with per-dream GPT theme tagging (uses default themes list)
 # Requires OPENAI_API_KEY in .env
-python synesthesia/synesthesia.py --run-gpt-themes
+python synesthesia.py --run-gpt-themes
 
 # Run per-dream tagging on a sample of 50 from top/bottom deciles
-python synesthesia/synesthesia.py --run-gpt-themes --gpt-sample-size 50
+python synesthesia.py --run-gpt-themes --gpt-sample-size 50
 
 # Run with GPT batch theme analysis (default: 10 iterations, batch size 30)
 # Requires OPENAI_API_KEY in .env
-python synesthesia/synesthesia.py --run-gpt-batch-themes
+python synesthesia.py --run-gpt-batch-themes
 
 # Run batch analysis with custom parameters
-python synesthesia/synesthesia.py --run-gpt-batch-themes --gpt-batch-size 20 --gpt-iterations 5
+python synesthesia.py --run-gpt-batch-themes --gpt-batch-size 20 --gpt-iterations 5
 
 # Run everything (SHAP, TF-IDF, Per-Dream Themes, Batch Themes)
-python synesthesia/synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes
+python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes
 
 # Run with PCA (150 components) and SHAP
-python synesthesia/synesthesia.py --use-pca --n-components 150 --run-shap
+python synesthesia.py --use-pca --n-components 150 --run-shap
 
 # Run keyword-based theme analysis
-python synesthesia/synesthesia.py --run-keyword-themes
+python synesthesia.py --run-keyword-themes
 
 # Run everything including keyword themes
-python synesthesia/synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes
+python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes
 
 # Run BERTopic analysis (assumes model exists)
-python synesthesia/synesthesia.py --run-bertopic-analysis
+python synesthesia.py --run-bertopic-analysis
 
 # Run everything including BERTopic
-python synesthesia/synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes --run-bertopic-analysis
+python synesthesia.py --run-shap --run-tfidf --run-gpt-themes --run-gpt-batch-themes --run-keyword-themes --run-bertopic-analysis
 
 # Run BERTopic analysis AND the topic grouping stage
-python synesthesia/synesthesia.py --run-bertopic-analysis --run-bertopic-grouping
+python synesthesia.py --run-bertopic-analysis --run-bertopic-grouping
 """
