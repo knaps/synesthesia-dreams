@@ -52,15 +52,15 @@ except nltk.downloader.DownloadError:
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Silence noisy HTTPX logs from simpleaichat/openai
 logging.getLogger("httpx").setLevel(logging.WARNING)
-SYNESTHESIA_CSV_PATH = 'synesthesia/synesthesia_dreams.csv'
-ENV_PATH = 'synesthesia/.env'
+SYNESTHESIA_CSV_PATH = 'synesthesia_dreams.csv'
+ENV_PATH = '.env'
 RANDOM_STATE = 42
 N_SPLITS = 5 # For cross-validation
 # Use pickle for caching arrays correctly
-CACHED_SYN_PATH = 'synesthesia/synesthesia_processed.pkl'
-CACHED_BASE_PATH = 'synesthesia/baseline_processed.pkl'
-GRIDSEARCH_RESULTS_PATH = 'synesthesia/gridsearch_results.joblib' # Cache file for GridSearchCV
-BERTOPIC_MODEL_PATH = 'synesthesia/bertopic_model/dreams_sentence_model' # Path to saved BERTopic model
+CACHED_SYN_PATH = 'synesthesia_processed.pkl'
+CACHED_BASE_PATH = 'baseline_processed.pkl'
+GRIDSEARCH_RESULTS_PATH = 'gridsearch_results.joblib' # Cache file for GridSearchCV
+BERTOPIC_MODEL_PATH = 'bertopic_model/dreams_sentence_model' # Path to saved BERTopic model
 
 # --- Helper Functions ---
 

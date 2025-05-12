@@ -21,8 +21,8 @@ import torch # Add torch import
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Silence SentenceTransformer info logs which can be noisy during loading
 logging.getLogger('sentence_transformers').setLevel(logging.WARNING)
-ENV_PATH = 'synesthesia/.env'
-MODEL_SAVE_DIR = 'synesthesia/bertopic_model'
+ENV_PATH = '.env'
+MODEL_SAVE_DIR = 'bertopic_model/'
 MODEL_NAME = 'dreams_sentence_model'
 # Ensure NLTK sentence tokenizer is available
 try:
