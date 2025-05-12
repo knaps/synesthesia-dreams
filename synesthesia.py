@@ -128,7 +128,7 @@ def load_synesthesia_data(filepath=SYNESTHESIA_CSV_PATH):
         logging.error(f"Error loading synesthesia data: {e}")
         raise
 
-def load_baseline_data_date_matched(engine, syn_df, min_length=50):
+def load_baseline_data_date_matched(engine, syn_df, min_length=200):
     """
     Loads baseline dream data from the database, matching the date distribution
     of the synesthesia dreams and excluding authors present in syn_df.
