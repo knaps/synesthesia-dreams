@@ -1,0 +1,17 @@
+python-dotenv
+pandas
+SQLAlchemy
+nltk
+bertopic
+sentence-transformers
+hdbscan
+umap-learn
+scikit-learn
+torch
+numpy
+scipy
+pydantic
+simpleaichat
+openai
+joblib
+shap
